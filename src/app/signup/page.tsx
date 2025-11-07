@@ -50,7 +50,7 @@ export default function SignUpPage() {
         title: "Account created!",
         description: "Welcome to AI Agent Playground.",
       });
-      router.push("/");
+      router.push("/dashboard");
     } catch (error) {
       toast({
         title: "Error",

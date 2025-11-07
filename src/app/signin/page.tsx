@@ -29,7 +29,7 @@ export default function SignInPage() {
         title: "Welcome back!",
         description: "You've successfully signed in.",
       });
-      router.push("/");
+      router.push("/dashboard");
     } catch (error) {
       toast({
         title: "Error",
