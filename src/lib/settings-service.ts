@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import { supabase, isSupabaseConfigured } from './supabaseClient';
 import { UserSettings, defaultSettings } from './settings-types';
 
 export class SettingsService {
@@ -6,6 +6,11 @@ export class SettingsService {
    * Get user settings from Supabase
    */
   static async getUserSettings(userId: string): Promise<UserSettings | null> {
+    if (!isSupabaseConfigured) {
+      console.warn('Supabase not configured, returning null');
+      return null;
+    }
+
     try {
       const { data, error } = await supabase
         .from('user_settings')

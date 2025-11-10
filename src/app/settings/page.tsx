@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { SettingsService } from "@/lib/settings-service";
+import { isSupabaseConfigured } from "@/lib/supabaseClient";
 import { UserSettings, Theme, Language, defaultSettings } from "@/lib/settings-types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -60,6 +61,17 @@ export default function SettingsPage() {
     
     setIsLoading(true);
     try {
+      if (!isSupabaseConfigured) {
+        // Use local defaults if Supabase not configured
+        setSettings({ userId: user.id, ...defaultSettings });
+        toast({
+          title: "Demo Mode",
+          description: "Supabase not configured. Using local settings.",
+          variant: "default"
+        });
+        return;
+      }
+
       let userSettings = await SettingsService.getUserSettings(user.id);
       
       if (!userSettings) {
@@ -84,6 +96,15 @@ export default function SettingsPage() {
   const handleSaveSettings = async () => {
     if (!settings || !user) return;
     
+    if (!isSupabaseConfigured) {
+      toast({
+        title: "Demo Mode",
+        description: "Supabase not configured. Settings saved locally only.",
+        variant: "default"
+      });
+      return;
+    }
+
     setIsSaving(true);
     try {
       const success = await SettingsService.saveUserSettings(settings);
